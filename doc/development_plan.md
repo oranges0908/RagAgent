@@ -85,14 +85,14 @@
 
 > 持久化向量索引与 chunk 元数据
 
-- [ ] 安装 `faiss-cpu`
-- [ ] 实现 `core/faiss_store.py`：`FAISSStore`
-  - [ ] `add(paper_id, vectors, metadata_list)`：写入内存索引 + meta list
-  - [ ] `save(paper_id)`：写 `{paper_id}.index` 和 `{paper_id}.meta.json`
-  - [ ] `load(paper_id)`：从磁盘读入缓存
-  - [ ] `search(query_vector, top_k, paper_id?) -> list[SearchResult]`
-  - [ ] 启动时扫描 `storage/faiss/` 自动 load 所有 index
-- [ ] 验证：add → save → 重启 → load → search，结果一致
+- [x] 安装 `faiss-cpu`
+- [x] 实现 `core/faiss_store.py`：`FAISSStore`
+  - [x] `add(paper_id, vectors, metadata_list)`：写入内存索引 + meta list
+  - [x] `save(paper_id)`：写 `{paper_id}.index` 和 `{paper_id}.meta.json`
+  - [x] `load(paper_id)`：从磁盘读入缓存
+  - [x] `search(query_vector, top_k, paper_id?) -> list[SearchResult]`
+  - [x] 启动时扫描 `storage/faiss/` 自动 load 所有 index
+- [x] 验证：add → save → 重启 → load → search，结果一致
 
 ---
 

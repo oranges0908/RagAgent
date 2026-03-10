@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Paths
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent  # project root
 STORAGE_DIR = BASE_DIR / "storage"
 FAISS_DIR = STORAGE_DIR / "faiss"
 DB_PATH = STORAGE_DIR / "papers.db"
