@@ -73,11 +73,11 @@
 
 > 为 chunk 生成向量
 
-- [ ] 安装 `sentence-transformers`
-- [ ] 实现 `core/embedder.py`：`Embedder`
-  - [ ] `__init__(model_name)`：加载模型，记录 `dim`
-  - [ ] `embed(texts: list[str]) -> np.ndarray`：批量 embed，batch_size=32
-- [ ] 验证：embed 5 条文本，返回 shape `(5, dim)`，值为 float32
+- [x] 安装 `sentence-transformers`
+- [x] 实现 `core/embedder.py`：`Embedder`
+  - [x] `__init__(model_name)`：加载模型，记录 `dim`
+  - [x] `embed(texts: list[str]) -> np.ndarray`：批量 embed，batch_size=32
+- [x] 验证：embed 5 条文本，返回 shape `(5, dim)`，值为 float32
 
 ---
 
