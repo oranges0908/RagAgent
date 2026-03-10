@@ -61,11 +61,11 @@
 
 > 滑动窗口分块，保留来源信息
 
-- [ ] 实现 `core/text_chunker.py`：`TextChunker(chunk_size=500, chunk_overlap=100)`
-  - [ ] `chunk(text, section) -> list[Chunk]`
-  - [ ] 优先在句子边界（`. ? !` + 空格）切分
-  - [ ] 每个 `Chunk`：`text, section, chunk_index, char_start, char_end`
-- [ ] 验证：对已知文本断言 chunk 数量、overlap 字符数、边界不切断单词
+- [x] 实现 `core/text_chunker.py`：`TextChunker(chunk_size=500, chunk_overlap=100)`
+  - [x] `chunk(text, section) -> list[Chunk]`
+  - [x] 优先在句子边界（`. ? !` + 空格）切分
+  - [x] 每个 `Chunk`：`text, section, chunk_index, char_start, char_end`
+- [x] 验证：对已知文本断言 chunk 数量、overlap 字符数、边界不切断单词
 
 ---
 
