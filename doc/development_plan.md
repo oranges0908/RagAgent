@@ -214,9 +214,9 @@
 
 ### Step 15：流式输出（F-20）
 
-- [ ] Claude API 调用改为 `stream=True`
-- [ ] FastAPI 使用 `StreamingResponse`，Content-Type: `text/event-stream`
-- [ ] Flutter `query_page.dart` 改用 `http` chunked 读取或 SSE，逐字渲染答案
+- [x] Gemini API 调用改为流式（`generate_content_stream`）
+- [x] FastAPI 使用 `StreamingResponse`，Content-Type: `text/event-stream`，新增 `POST /api/query/stream`
+- [x] Flutter `query_page.dart` 改用 SSE 流式读取，sources 先到，answer 逐块渲染
 
 ---
 

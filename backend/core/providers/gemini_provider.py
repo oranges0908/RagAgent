@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+from typing import AsyncIterator
 
 from google import genai
 from google.genai import types
@@ -60,6 +61,16 @@ class GeminiProvider(LLMProvider):
                 logger.warning("Gemini API attempt %d failed: %s. Retrying in %ds…", attempt + 1, exc, wait)
                 await asyncio.sleep(wait)
         raise RuntimeError(f"Gemini API failed after 3 attempts") from last_exc
+
+    async def complete_stream(self, prompt: str) -> AsyncIterator[str]:
+        """调用 Gemini 流式 API，逐块 yield 文本片段。"""
+        async for chunk in await self.client.aio.models.generate_content_stream(
+            model=self.model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(max_output_tokens=self.max_tokens),
+        ):
+            if chunk.text:
+                yield chunk.text
 
 
 provider_dict["gemini"] = GeminiProvider

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 const String _baseUrl = 'http://localhost:8000';
 
@@ -86,6 +87,36 @@ class ApiService {
     if (res.statusCode != 204) {
       final detail = jsonDecode(res.body)['detail'] ?? res.body;
       throw Exception('Delete failed: $detail');
+    }
+  }
+
+  /// 流式问答（SSE），返回事件流：sources → delta* → done
+  /// 每个事件为 Map with "type" key: "sources" | "delta" | "done"
+  static Stream<Map<String, dynamic>> queryStream(
+      String question, {String? paperId}) async* {
+    final client = http.Client();
+    try {
+      final request =
+          http.Request('POST', Uri.parse('$_baseUrl/api/query/stream'));
+      request.headers['Content-Type'] = 'application/json';
+      request.body = jsonEncode({'question': question, 'paper_id': paperId});
+
+      final response = await client.send(request);
+      if (response.statusCode != 200) {
+        final body = await response.stream.bytesToString();
+        throw Exception('Stream query failed: $body');
+      }
+
+      await for (final line in response.stream
+          .transform(utf8.decoder)
+          .transform(const LineSplitter())) {
+        if (line.startsWith('data: ')) {
+          final data = line.substring(6);
+          yield jsonDecode(data) as Map<String, dynamic>;
+        }
+      }
+    } finally {
+      client.close();
     }
   }
 
