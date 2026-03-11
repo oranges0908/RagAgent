@@ -1,3 +1,5 @@
+import asyncio
+import logging
 import os
 
 from google import genai
@@ -6,6 +8,8 @@ from google.genai import types
 from backend.config import GEMINI_MODEL, LLM_MAX_TOKENS
 from backend.core.llm_provider import LLMProvider
 from backend.core.providers import provider_dict
+
+logger = logging.getLogger(__name__)
 
 
 class GeminiProvider(LLMProvider):
@@ -37,28 +41,25 @@ class GeminiProvider(LLMProvider):
 
     async def complete(self, prompt: str) -> str:
         """
-        调用 Gemini API，返回生成文本。
-
-        提示：
-        - 使用 self.model.generate_content_async(prompt, ...)
-        - generation_config 可设置 max_output_tokens=self.max_tokens
-        - 返回 response.text
-
-        :param prompt: 完整 prompt 字符串
-        :return:       Gemini 生成的回复文本
+        调用 Gemini API，返回生成文本。失败时指数退避重试最多 3 次（1s→2s→4s）。
         """
-        # TODO: 实现 Gemini API 调用
-
-        response = await self.client.aio.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                max_output_tokens=self.max_tokens,
-            )
-        )
-
-        return response.text
-        raise NotImplementedError
+        last_exc: Exception | None = None
+        for attempt in range(3):
+            try:
+                response = await self.client.aio.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        max_output_tokens=self.max_tokens,
+                    ),
+                )
+                return response.text
+            except Exception as exc:
+                last_exc = exc
+                wait = 2 ** attempt  # 1s, 2s, 4s
+                logger.warning("Gemini API attempt %d failed: %s. Retrying in %ds…", attempt + 1, exc, wait)
+                await asyncio.sleep(wait)
+        raise RuntimeError(f"Gemini API failed after 3 attempts") from last_exc
 
 
 provider_dict["gemini"] = GeminiProvider

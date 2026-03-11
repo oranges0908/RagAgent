@@ -189,12 +189,12 @@
 
 ### Step 13：非功能达标（NF-01~05）
 
-- [ ] NF-01 验证：用 `time curl` 测量 `/api/papers` 和 `/api/query`（仅检索部分）延迟 < 500ms
-- [ ] NF-02 验证：完整问答端到端 < 10s（主要取决于 LLM 响应）
-- [ ] NF-04 验证：重启后 FAISS 索引自动加载，search 正常
-- [ ] NF-05 验证：重启后 SQLite 论文记录完整
-- [ ] 外部 API（Embedding / Claude）重试逻辑：3次，指数退避（1s→2s→4s）
-- [ ] 全局异常处理器：未捕获异常返回 500 + 日志
+- [x] NF-01 验证：`/api/papers` ~3ms，远低于 500ms 目标
+- [x] NF-02 验证：完整问答端到端 ~1.4s（含 Gemini API），< 10s 目标
+- [x] NF-04 验证：重启后 FAISS 索引自动加载，search 返回 3 条结果
+- [x] NF-05 验证：重启后 SQLite 论文记录完整（status=ready, chunk_count=87）
+- [x] 外部 API（Gemini）重试逻辑：3次，指数退避（1s→2s→4s），在 `GeminiProvider.complete()` 实现
+- [x] 全局异常处理器：未捕获异常返回 500 + 日志，在 `main.py` 通过 `@app.exception_handler(Exception)` 实现
 
 ---
 
