@@ -70,6 +70,16 @@ class ApiService {
     return Paper.fromJson(jsonDecode(body));
   }
 
+  /// 获取所有论文列表（按上传时间降序）
+  static Future<List<Paper>> getPapers() async {
+    final res = await http.get(Uri.parse('$_baseUrl/api/papers'));
+    if (res.statusCode != 200) {
+      throw Exception('Failed to load papers: ${res.body}');
+    }
+    final list = jsonDecode(res.body) as List;
+    return list.map((j) => Paper.fromJson(j)).toList();
+  }
+
   /// 问答，paper_id 为 null 时跨全库检索
   static Future<QueryResponse> query(String question, {String? paperId}) async {
     final res = await http.post(

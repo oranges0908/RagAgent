@@ -165,9 +165,9 @@
 
 ### Step 10：论文列表（F-05）
 
-- [ ] 实现 `routers/papers.py`：`GET /api/papers`，返回按 `uploaded_at DESC` 排序的论文列表
-- [ ] Flutter `pages/papers_page.dart`：展示论文列表（title, filename, chunk_count, status）
-- [ ] 导航加入论文列表页（Tab 或侧边栏）
+- [x] 实现 `routers/papers.py`：`GET /api/papers`，返回按 `uploaded_at DESC` 排序的论文列表
+- [x] Flutter `pages/papers_page.dart`：展示论文列表（title, filename, chunk_count, status）
+- [x] 导航加入论文列表页（Tab 或侧边栏）
 
 ---
 

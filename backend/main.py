@@ -6,7 +6,7 @@ from backend.core.embedder import Embedder
 from backend.core.faiss_store import FAISSStore
 from backend.core.providers import create_llm_provider
 from backend.db.database import init_db
-from backend.routers import upload, query
+from backend.routers import upload, query, papers
 
 app = FastAPI(title="AI Research Paper Assistant")
 
@@ -24,6 +24,7 @@ llm_provider = create_llm_provider()      # 根据 config.LLM_PROVIDER 创建
 
 app.include_router(upload.router)
 app.include_router(query.router)
+app.include_router(papers.router)
 
 
 @app.on_event("startup")

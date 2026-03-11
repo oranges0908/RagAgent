@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/upload_page.dart';
 import 'pages/query_page.dart';
+import 'pages/papers_page.dart';
 
 void main() {
   runApp(const RagAgentApp());
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _pages = [
     UploadPage(),
+    PapersPage(),
     QueryPage(),
   ];
 
@@ -51,6 +53,7 @@ class _HomePageState extends State<HomePage> {
             labelType: NavigationRailLabelType.all,
             destinations: const [
               NavigationRailDestination(icon: Icon(Icons.upload_file), label: Text('上传')),
+              NavigationRailDestination(icon: Icon(Icons.library_books), label: Text('论文')),
               NavigationRailDestination(icon: Icon(Icons.question_answer), label: Text('问答')),
             ],
           ),
