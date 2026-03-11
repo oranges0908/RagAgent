@@ -17,7 +17,8 @@ TOP_K = 3
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 # LLM
-LLM_MODEL = "claude-sonnet-4-6"
+LLM_PROVIDER="gemini"
+GEMINI_MODEL = "gemini-2.0-flash"
 LLM_MAX_TOKENS = 1024
 
 # Upload

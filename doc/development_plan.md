@@ -114,25 +114,32 @@
 
 ---
 
-### Step 8：PromptBuilder + Claude 问答（F-16~F-19）
+### Step 8：LLM 代理层 + Gemini 问答（F-16~F-19）
 
-> 检索 chunk，构建 Prompt，调用 LLM
+> 引入 LLMProvider 抽象层，默认使用 Gemini；检索 chunk，构建 Prompt，调用 LLM
 
-- [ ] 安装 `anthropic`
-- [ ] 实现 `core/prompt_builder.py`：`PromptBuilder`
-  - [ ] `build(chunks, question) -> str`：生成编号 context 块 + 问题（见 system_design.md §6.3）
+- [x] 安装 `google-generativeai`
+- [x] 实现 `core/llm_provider.py`：`LLMProvider` 抽象基类
+  - [x] `async complete(prompt: str) -> str`
+- [x] 实现 `core/providers/gemini_provider.py`：`GeminiProvider(LLMProvider)`
+  - [ ] `__init__`：读取 `GEMINI_API_KEY`，初始化 `genai` 客户端
+  - [ ] `complete(prompt) -> str`：调用 `generate_content_async`，返回 `response.text`
+- [x] 实现 `core/providers/__init__.py`：`create_llm_provider()` 工厂函数
+- [x] 实现 `core/prompt_builder.py`：`PromptBuilder`
+  - [ ] `build(chunks, question) -> str`：生成编号 context 块 + 问题（见 system_design.md §6.4）
   - [ ] context 超长时按比例截断，总长不超过 ~3000 tokens
-- [ ] 实现 `services/query_service.py`：`QueryService`
-  - [ ] `query(question, paper_id?) -> QueryResponse`
+- [x] 实现 `services/query_service.py`：`QueryService`
+  - [x] `query(question, paper_id?) -> QueryResponse`
     1. embed question
     2. FAISSStore.search(top_k=3, paper_id?)
     3. PromptBuilder.build()
-    4. 调用 Claude API（`claude-sonnet-4-6`），`max_tokens=1024`
+    4. LLMProvider.complete(prompt)，`max_tokens=1024`
     5. 解析返回文本，组装 `QueryResponse`
-- [ ] 实现 `routers/query.py`：`POST /api/query`
-  - [ ] 校验 `question` 非空；若指定 `paper_id` 校验论文存在
-  - [ ] 返回 `{answer, sources}`
-- [ ] 验证：用上传的论文提问，返回 answer 和 sources
+- [x] 实现 `routers/query.py`：`POST /api/query`
+  - [x] 校验 `question` 非空；若指定 `paper_id` 校验论文存在
+  - [x] 返回 `{answer, sources}`
+- [x] 更新 `main.py`：注册全局 `embedder` 和 `llm_provider` 实例，引入 query router
+- [x] 验证：用上传的论文提问，返回 answer 和 sources
 
 ---
 

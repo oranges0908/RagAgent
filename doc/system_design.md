@@ -32,8 +32,7 @@
                    │ HTTPS
         ┌──────────▼──────────┐
         │  External APIs       │
-        │  Claude API (LLM)   │
-        │  Embedding API      │
+        │  Gemini API (LLM)   │
         └─────────────────────┘
 ```
 
@@ -56,9 +55,13 @@ RagAgent/
 │   ├── core/
 │   │   ├── pdf_extractor.py     # PyMuPDF-based text + section extraction
 │   │   ├── text_chunker.py      # TextChunker: sliding-window chunking
-│   │   ├── embedder.py          # Embedding generation (local or OpenAI)
+│   │   ├── embedder.py          # Embedding generation (sentence-transformers)
 │   │   ├── faiss_store.py       # FAISSStore: index CRUD + persistence
-│   │   └── prompt_builder.py    # PromptBuilder: context → prompt string
+│   │   ├── prompt_builder.py    # PromptBuilder: context → prompt string
+│   │   ├── llm_provider.py      # LLMProvider abstract base class
+│   │   └── providers/
+│   │       ├── __init__.py      # create_llm_provider() factory
+│   │       └── gemini_provider.py  # GeminiProvider implementation
 │   ├── db/
 │   │   ├── database.py          # SQLite connection (aiosqlite)
 │   │   ├── models.py            # Paper dataclass / Pydantic models
@@ -129,7 +132,8 @@ Client                  FastAPI              QueryService            External
   │                        │                     │   .build(chunks,     │
   │                        │                     │          question)   │
   │                        │                     │                      │
-  │                        │                     │── Claude API call ──►│
+  │                        │                     │── LLMProvider ──────►│
+  │                        │                     │   .complete(prompt)  │
   │                        │                     │◄── answer text ──────│
   │                        │                     │                      │
   │◄── 200 {answer,        │◄── QueryResponse ───│                      │
@@ -263,7 +267,7 @@ CREATE TABLE papers (
 **Errors:**
 - `400` — empty question
 - `404` — paper_id not found (when specified)
-- `502` — Claude API or Embedding API unreachable
+- `502` — Gemini API unreachable
 
 ---
 
@@ -296,7 +300,21 @@ FAISSStore
 - `IndexFlatL2` for exact search (suitable for MVP scale; upgrade to `IndexIVFFlat` if > 100k chunks).
 - Thread-safe reads; writes protected by a per-paper asyncio lock.
 
-### 6.3 PromptBuilder
+### 6.3 LLMProvider
+
+```
+LLMProvider (abstract)
+  .complete(prompt: str) -> str   # async
+
+GeminiProvider(LLMProvider)      # default — uses google-generativeai
+```
+
+- Single async method `complete(prompt)` decouples `QueryService` from any specific API.
+- `GeminiProvider` reads `GEMINI_API_KEY` from environment; calls `generate_content_async`.
+- Adding a new provider (e.g., Claude, local Ollama) requires only a new subclass — no changes to `QueryService`.
+- Factory: `create_llm_provider()` in `core/providers/__init__.py` returns the active provider.
+
+### 6.4 PromptBuilder
 
 ```
 PromptBuilder.build(chunks: list[SearchResult], question: str) -> str
@@ -332,8 +350,7 @@ Answer clearly and cite the source text.
 | Router | FastAPI `HTTPException` with structured `{"detail": "..."}` body |
 | IngestionService | On any step failure, set `paper.status = "error"` in DB; raise to router |
 | FAISSStore | `FileNotFoundError` on missing index → `404` propagation |
-| Embedding API | Retry up to 3× with exponential backoff (1s, 2s, 4s); then `502` |
-| Claude API | Same retry policy; surface as `502` if all retries exhausted |
+| Gemini API | Retry up to 3× with exponential backoff (1s, 2s, 4s); surface as `502` if all retries exhausted |
 | PDF extraction | If text extraction yields < 100 chars, reject with `400 "Could not extract text from PDF"` |
 
 All unhandled exceptions are caught by a global FastAPI `exception_handler` that logs the traceback and returns `500`.
@@ -375,7 +392,7 @@ Production: restrict `allow_origins` to the deployed Flutter Web origin.
 | `pymupdf` (fitz) | ≥ 1.23 | PDF text extraction |
 | `faiss-cpu` | ≥ 1.8 | Vector similarity search |
 | `sentence-transformers` | ≥ 2.6 | Local embedding model |
-| `anthropic` | ≥ 0.25 | Claude API client |
+| `google-generativeai` | ≥ 0.8 | Gemini API client |
 | `aiosqlite` | ≥ 0.20 | Async SQLite access |
 | `python-multipart` | ≥ 0.0.9 | File upload support |
 | `pydantic` | ≥ 2.0 | Request/response validation |

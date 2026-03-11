@@ -18,7 +18,6 @@ class Embedder:
         # TODO: 加载模型，记录 self.model 和 self.dim
         self.model = SentenceTransformer(model_name)
         self.dim = self.model.get_sentence_embedding_dimension()
-        print("Embedder dimension",self.dim)
 
     def embed(self, texts: list[str]) -> np.ndarray:
         """
@@ -37,4 +36,3 @@ class Embedder:
             return np.zeros((0, self.dim))
         embeddings = self.model.encode(texts, batch_size=32, show_progress_bar=False)
         return np.array(embeddings).astype(np.float32)
-        raise NotImplementedError
