@@ -122,12 +122,12 @@
 - [x] 实现 `core/llm_provider.py`：`LLMProvider` 抽象基类
   - [x] `async complete(prompt: str) -> str`
 - [x] 实现 `core/providers/gemini_provider.py`：`GeminiProvider(LLMProvider)`
-  - [ ] `__init__`：读取 `GEMINI_API_KEY`，初始化 `genai` 客户端
-  - [ ] `complete(prompt) -> str`：调用 `generate_content_async`，返回 `response.text`
+  - [x] `__init__`：读取 `GEMINI_API_KEY`，初始化 `genai` 客户端
+  - [x] `complete(prompt) -> str`：调用 `generate_content_async`，返回 `response.text`
 - [x] 实现 `core/providers/__init__.py`：`create_llm_provider()` 工厂函数
 - [x] 实现 `core/prompt_builder.py`：`PromptBuilder`
-  - [ ] `build(chunks, question) -> str`：生成编号 context 块 + 问题（见 system_design.md §6.4）
-  - [ ] context 超长时按比例截断，总长不超过 ~3000 tokens
+  - [x] `build(chunks, question) -> str`：生成编号 context 块 + 问题（见 system_design.md §6.4）
+  - [x] context 超长时按比例截断，总长不超过 ~3000 tokens
 - [x] 实现 `services/query_service.py`：`QueryService`
   - [x] `query(question, paper_id?) -> QueryResponse`
     1. embed question
