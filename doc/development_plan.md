@@ -222,8 +222,8 @@
 
 ### Step 16：Sources 折叠展开（F-25）
 
-- [ ] Flutter `query_page.dart`：Sources 区域默认折叠，点击展开显示原文摘录
-- [ ] 高亮 `chunk_text` 中与问题相关的关键词（可选，客户端简单实现）
+- [x] Flutter `query_page.dart`：Sources 区域默认折叠，点击展开显示原文摘录
+- [x] 高亮 `chunk_text` 中与问题相关的关键词（客户端正则匹配，黄色背景）
 
 ---
 

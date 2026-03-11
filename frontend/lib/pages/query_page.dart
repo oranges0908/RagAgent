@@ -3,6 +3,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../services/api_service.dart';
 
+/// Renders [text] with [keywords] highlighted in yellow.
+class _HighlightedText extends StatelessWidget {
+  final String text;
+  final List<String> keywords;
+
+  const _HighlightedText({required this.text, required this.keywords});
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = keywords.where((k) => k.length > 2).toList();
+    if (filtered.isEmpty) {
+      return Text(text,
+          style: const TextStyle(fontSize: 13, color: Colors.black87));
+    }
+
+    final pattern = RegExp(
+      filtered.map(RegExp.escape).join('|'),
+      caseSensitive: false,
+    );
+
+    final spans = <TextSpan>[];
+    int last = 0;
+    for (final match in pattern.allMatches(text)) {
+      if (match.start > last) {
+        spans.add(TextSpan(text: text.substring(last, match.start)));
+      }
+      spans.add(TextSpan(
+        text: text.substring(match.start, match.end),
+        style: const TextStyle(
+          backgroundColor: Color(0xFFFFEB3B),
+          fontWeight: FontWeight.bold,
+        ),
+      ));
+      last = match.end;
+    }
+    if (last < text.length) {
+      spans.add(TextSpan(text: text.substring(last)));
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(fontSize: 13, color: Colors.black87),
+        children: spans,
+      ),
+    );
+  }
+}
+
 class QueryPage extends StatefulWidget {
   const QueryPage({super.key});
   @override
@@ -181,24 +229,21 @@ class _QueryPageState extends State<QueryPage> {
                 final s = e.value;
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '[${i + 1}] ${s.section}  •  score: ${s.score.toStringAsFixed(3)}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(s.text,
-                            style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black87)),
-                      ],
+                  child: ExpansionTile(
+                    initiallyExpanded: false,
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+                    childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    title: Text(
+                      '[${i + 1}] ${s.section}  •  score: ${s.score.toStringAsFixed(3)}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 13),
                     ),
+                    children: [
+                      _HighlightedText(
+                        text: s.text,
+                        keywords: _questionCtrl.text.trim().split(RegExp(r'\s+')),
+                      ),
+                    ],
                   ),
                 );
               }),
