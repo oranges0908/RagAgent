@@ -173,10 +173,10 @@
 
 ### Step 11：按论文过滤检索（F-14, F-15）
 
-- [ ] `FAISSStore.search()` 支持 `paper_id` 过滤（已有设计，补全逻辑）
-- [ ] `POST /api/query` 的 `paper_id` 字段完整联通（MVP 中可能是 optional）
-- [ ] `SearchResult` 包含 `score` 字段（余弦相似度或 L2 距离归一化）
-- [ ] API 响应中 `sources[].score` 正确输出（F-15）
+- [x] `FAISSStore.search()` 支持 `paper_id` 过滤（已有设计，补全逻辑）
+- [x] `POST /api/query` 的 `paper_id` 字段完整联通（MVP 中可能是 optional）
+- [x] `SearchResult` 包含 `score` 字段（余弦相似度或 L2 距离归一化）
+- [x] API 响应中 `sources[].score` 正确输出（F-15）
 
 ---
 

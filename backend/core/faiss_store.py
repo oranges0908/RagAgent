@@ -143,15 +143,17 @@ class FAISSStore:
             if paper_id is not None and paper != paper_id:
                 continue
 
-            distances,indices = self._indexes[paper].search(query_vector, k=top_k)
-            for i,_ in enumerate(indices[0]):
-                if i == -1:
+            distances, indices = self._indexes[paper].search(query_vector, k=top_k)
+            for pos, idx in enumerate(indices[0]):
+                if idx == -1:
                     continue
-                sr = SearchResult(paper_id=paper,
-                             chunk_index=self._metadata[paper][i]["chunk_index"],
-                             section=self._metadata[paper][i]["section"],
-                             text=self._metadata[paper][i]["text"],
-                             score = float(distances[0][i]))
+                sr = SearchResult(
+                    paper_id=paper,
+                    chunk_index=self._metadata[paper][idx]["chunk_index"],
+                    section=self._metadata[paper][idx]["section"],
+                    text=self._metadata[paper][idx]["text"],
+                    score=float(distances[0][pos]),
+                )
                 rc.append(sr)
 
         return sorted(rc, key=lambda sr: sr.score, reverse=False)[:top_k]

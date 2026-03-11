@@ -107,6 +107,15 @@ def test_search_cross_papers(store):
     assert all(isinstance(r, SearchResult) for r in results)
 
 
+def test_search_returns_correct_chunk(store):
+    """查询向量与 chunk 7 完全一致时，top-1 应返回 chunk_index=7"""
+    vecs = make_vectors(10)
+    store.add("paper-1", vecs, make_metadata(10))
+    results = store.search(vecs[7], top_k=1, paper_id="paper-1")
+    assert results[0].chunk_index == 7
+    assert results[0].score == pytest.approx(0.0, abs=1e-5)
+
+
 def test_search_result_fields(store):
     """SearchResult 包含所有必要字段且类型正确"""
     store.add("paper-1", make_vectors(5), make_metadata(5))
