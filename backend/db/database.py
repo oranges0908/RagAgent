@@ -25,3 +25,10 @@ async def init_db() -> None:
 
 def get_db_path() -> str:
     return str(DB_PATH)
+
+
+async def get_db():
+    """FastAPI 依赖：提供一个 aiosqlite 连接，请求结束后自动关闭。"""
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("PRAGMA journal_mode=WAL")
+        yield db

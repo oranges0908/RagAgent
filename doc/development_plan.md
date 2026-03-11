@@ -100,17 +100,17 @@
 
 > 将 PDF 上传到 FAISS + SQLite
 
-- [ ] 实现 `services/ingestion.py`：`IngestionService`
-  - [ ] `ingest(file_bytes, filename) -> Paper`
+- [x] 实现 `services/ingestion.py`：`IngestionService`
+  - [x] `ingest(file_bytes, filename) -> Paper`
     1. 生成 UUID，创建 DB 记录（status=`processing`）
     2. PDF 提取 → 分块 → embed → FAISSStore.add + save
     3. 更新 DB（status=`ready`, chunk_count）
     4. 任何步骤失败 → 更新 status=`error`，重新抛出
-- [ ] 实现 `routers/upload.py`：`POST /api/upload`
-  - [ ] 接受 `multipart/form-data`，文件类型校验（`.pdf`），大小限制 20MB
-  - [ ] 调用 `IngestionService.ingest()`，返回 `Paper`
-- [ ] 安装 `python-multipart`
-- [ ] 验证：上传真实 PDF，检查 DB 记录和 `.index` 文件生成
+- [x] 实现 `routers/upload.py`：`POST /api/upload`
+  - [x] 接受 `multipart/form-data`，文件类型校验（`.pdf`），大小限制 20MB
+  - [x] 调用 `IngestionService.ingest()`，返回 `Paper`
+- [x] 安装 `python-multipart`
+- [x] 验证：上传真实 PDF，检查 DB 记录和 `.index` 文件生成
 
 ---
 
