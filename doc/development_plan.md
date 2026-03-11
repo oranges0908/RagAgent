@@ -202,13 +202,13 @@
 
 ### Step 14：删除论文（F-06）
 
-- [ ] `routers/papers.py`：`DELETE /api/papers/{id}`
-  - [ ] 校验论文存在，返回 404 if not
-  - [ ] SQLite delete
-  - [ ] 删除 `{id}.index` 和 `{id}.meta.json`
-  - [ ] FAISSStore 从内存缓存中移除
-  - [ ] 返回 204
-- [ ] Flutter `papers_page.dart`：每条论文右侧加删除按钮，二次确认弹窗
+- [x] `routers/papers.py`：`DELETE /api/papers/{id}`
+  - [x] 校验论文存在，返回 404 if not
+  - [x] SQLite delete
+  - [x] 删除 `{id}.index` 和 `{id}.meta.json`
+  - [x] FAISSStore 从内存缓存中移除
+  - [x] 返回 204
+- [x] Flutter `papers_page.dart`：每条论文右侧加删除按钮，二次确认弹窗
 
 ---
 

@@ -11,11 +11,40 @@ class _PapersPageState extends State<PapersPage> {
   List<Paper>? _papers;
   String? _error;
   bool _loading = true;
+  String? _deletingId;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  Future<void> _confirmDelete(Paper paper) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('确认删除'),
+        content: Text('删除「${paper.title}」？此操作不可撤销。'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('删除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    setState(() => _deletingId = paper.id);
+    try {
+      await ApiService.deletePaper(paper.id);
+      await _load();
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      setState(() => _deletingId = null);
+    }
   }
 
   Future<void> _load() async {
@@ -74,7 +103,20 @@ class _PapersPageState extends State<PapersPage> {
                       leading: const Icon(Icons.article_outlined),
                       title: Text(p.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Text('${p.filename}  •  ${p.chunkCount} chunks'),
-                      trailing: _StatusChip(p.status),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _StatusChip(p.status),
+                          const SizedBox(width: 8),
+                          _deletingId == p.id
+                              ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                              : IconButton(
+                                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                  tooltip: '删除',
+                                  onPressed: () => _confirmDelete(p),
+                                ),
+                        ],
+                      ),
                     ),
                   );
                 },

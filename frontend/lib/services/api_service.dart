@@ -80,6 +80,15 @@ class ApiService {
     return list.map((j) => Paper.fromJson(j)).toList();
   }
 
+  /// 删除论文（204 无内容）
+  static Future<void> deletePaper(String paperId) async {
+    final res = await http.delete(Uri.parse('$_baseUrl/api/papers/$paperId'));
+    if (res.statusCode != 204) {
+      final detail = jsonDecode(res.body)['detail'] ?? res.body;
+      throw Exception('Delete failed: $detail');
+    }
+  }
+
   /// 问答，paper_id 为 null 时跨全库检索
   static Future<QueryResponse> query(String question, {String? paperId}) async {
     final res = await http.post(

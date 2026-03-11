@@ -157,3 +157,8 @@ class FAISSStore:
                 rc.append(sr)
 
         return sorted(rc, key=lambda sr: sr.score, reverse=False)[:top_k]
+
+    def remove(self, paper_id: str) -> None:
+        """从内存缓存中移除论文的索引和元数据（文件删除由调用方负责）。"""
+        self._indexes.pop(paper_id, None)
+        self._metadata.pop(paper_id, None)
