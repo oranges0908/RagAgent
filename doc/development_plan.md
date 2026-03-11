@@ -147,17 +147,17 @@
 
 > 上传页 + 问答页
 
-- [ ] 初始化 Flutter Web 项目（`frontend/`）
-- [ ] 添加依赖：`http`、`file_picker`、`flutter_markdown`
-- [ ] 实现 `services/api_service.dart`：封装 `upload(file)`、`query(question, paperId?)`
-- [ ] 实现 `pages/upload_page.dart`
-  - [ ] 点击选择 PDF 文件（file_picker）
-  - [ ] 调用 upload API，展示上传进度和结果（paper title / error）
-- [ ] 实现 `pages/query_page.dart`
-  - [ ] 文本输入框 + 提交按钮
-  - [ ] 展示 Answer（Markdown 渲染）和 Sources 列表（paper, section, quote）
-- [ ] 实现 `main.dart`：简单 Tab/导航，切换两页
-- [ ] 验证：端到端跑通——上传论文 → 切换到问答页 → 提问 → 看到答案
+- [x] 初始化 Flutter Web 项目（`frontend/`）
+- [x] 添加依赖：`http`、`file_picker`、`flutter_markdown`
+- [x] 实现 `services/api_service.dart`：封装 `upload(file)`、`query(question, paperId?)`
+- [x] 实现 `pages/upload_page.dart`
+  - [x] 点击选择 PDF 文件（file_picker）
+  - [x] 调用 upload API，展示上传进度和结果（paper title / error）
+- [x] 实现 `pages/query_page.dart`
+  - [x] 文本输入框 + 提交按钮
+  - [x] 展示 Answer（Markdown 渲染）和 Sources 列表（paper, section, quote）
+- [x] 实现 `main.dart`：简单 Tab/导航，切换两页
+- [x] 验证：端到端跑通——上传论文 → 切换到问答页 → 提问 → 看到答案
 
 ---
 
