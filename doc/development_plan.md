@@ -182,8 +182,8 @@
 
 ### Step 12：前端选择论文提问（F-24）
 
-- [ ] `query_page.dart` 增加论文选择下拉框（从 papers 列表动态加载）
-- [ ] 选择"全库"时 `paper_id` 为 null
+- [x] `query_page.dart` 增加论文选择下拉框（从 papers 列表动态加载）
+- [x] 选择"全库"时 `paper_id` 为 null
 
 ---
 

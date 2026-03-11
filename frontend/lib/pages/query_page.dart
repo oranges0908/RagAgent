@@ -14,6 +14,25 @@ class _QueryPageState extends State<QueryPage> {
   String? _error;
   QueryResponse? _response;
 
+  // Paper selector state
+  List<Paper> _papers = [];
+  String? _selectedPaperId; // null = 全库
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPapers();
+  }
+
+  Future<void> _loadPapers() async {
+    try {
+      final papers = await ApiService.getPapers();
+      setState(() => _papers = papers);
+    } catch (_) {
+      // Non-critical: dropdown simply stays empty
+    }
+  }
+
   Future<void> _submit() async {
     final q = _questionCtrl.text.trim();
     if (q.isEmpty) return;
@@ -23,7 +42,7 @@ class _QueryPageState extends State<QueryPage> {
       _response = null;
     });
     try {
-      final res = await ApiService.query(q);
+      final res = await ApiService.query(q, paperId: _selectedPaperId);
       setState(() => _response = res);
     } catch (e) {
       setState(() => _error = e.toString());
@@ -46,7 +65,28 @@ class _QueryPageState extends State<QueryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('论文问答', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          // Paper selector dropdown
+          DropdownButtonFormField<String?>(
+            initialValue: _selectedPaperId,
+            decoration: const InputDecoration(
+              labelText: '检索范围',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            items: [
+              const DropdownMenuItem<String?>(
+                value: null,
+                child: Text('全库'),
+              ),
+              ..._papers.map((p) => DropdownMenuItem<String?>(
+                    value: p.id,
+                    child: Text(p.title, overflow: TextOverflow.ellipsis),
+                  )),
+            ],
+            onChanged: (v) => setState(() => _selectedPaperId = v),
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
