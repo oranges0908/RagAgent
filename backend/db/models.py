@@ -24,8 +24,9 @@ class Source(BaseModel):
     paper_id: str
     section: str
     chunk_index: int
-    text: str        # chunk 原文摘录
-    score: float     # L2 距离（越小越相关）
+    text: str               # 命中 chunk 原文（LLM prompt 用）
+    score: float            # L2 距离（越小越相关）
+    context_text: str = ""  # 扩展上下文（±2 相邻 chunk，前端展示用）
 
 
 class QueryResponse(BaseModel):

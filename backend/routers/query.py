@@ -82,6 +82,7 @@ async def query_papers_stream(
     query_vector = emb.embed([body.question])[0]
     results = store.search(query_vector, top_k=TOP_K, paper_id=body.paper_id)
     prompt = PromptBuilder().build(results, body.question)
+    print("[PromptBuilder] prompt:\n", prompt, flush=True)
 
     sources = [
         Source(
@@ -98,8 +99,11 @@ async def query_papers_stream(
         # 1. Send sources first
         yield f"data: {json.dumps({'type': 'sources', 'sources': sources})}\n\n"
         # 2. Stream LLM text chunks
+        full_answer = []
         async for chunk in llm.complete_stream(prompt):
+            full_answer.append(chunk)
             yield f"data: {json.dumps({'type': 'delta', 'text': chunk})}\n\n"
+        print("[LLM] answer:\n", "".join(full_answer), flush=True)
         # 3. Done signal
         yield "data: {\"type\":\"done\"}\n\n"
 

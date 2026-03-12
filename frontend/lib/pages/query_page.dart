@@ -192,63 +192,94 @@ class _QueryPageState extends State<QueryPage> {
             ],
           ),
           const SizedBox(height: 24),
-          if (_error != null)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red),
-              ),
-              child: Text(_error!,
-                  style: TextStyle(color: Colors.red.shade800)),
-            ),
-          if (_answer.isNotEmpty || _sources.isNotEmpty) ...[
-            const Text('答案',
-                style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: MarkdownBody(data: _answer),
-            ),
-            if (_sources.isNotEmpty) ...[
-              const SizedBox(height: 20),
-              const Text('来源',
-                  style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              ..._sources.asMap().entries.map((e) {
-                final i = e.key;
-                final s = e.value;
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: ExpansionTile(
-                    initiallyExpanded: false,
-                    tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-                    childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                    title: Text(
-                      '[${i + 1}] ${s.section}  •  score: ${s.score.toStringAsFixed(3)}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 13),
-                    ),
-                    children: [
-                      _HighlightedText(
-                        text: s.text,
-                        keywords: _questionCtrl.text.trim().split(RegExp(r'\s+')),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_error != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red),
                       ),
+                      child: Text(_error!,
+                          style: TextStyle(color: Colors.red.shade800)),
+                    ),
+                  if (_answer.isNotEmpty || _sources.isNotEmpty) ...[
+                    const Text('答案',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: MarkdownBody(data: _answer),
+                    ),
+                    if (_sources.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      const Text('来源',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      ..._sources.asMap().entries.map((e) {
+                        final i = e.key;
+                        final s = e.value;
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ExpansionTile(
+                            initiallyExpanded: false,
+                            tilePadding:
+                                const EdgeInsets.symmetric(horizontal: 12),
+                            childrenPadding:
+                                const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                            title: Text(
+                              '[${i + 1}] ${s.section}  •  score: ${s.score.toStringAsFixed(3)}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 13),
+                            ),
+                            children: [
+                              // 匹配片段标注
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFF9C4),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                      color: const Color(0xFFFFEB3B)),
+                                ),
+                                child: Text(
+                                  '匹配片段：${s.text}',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.black54),
+                                ),
+                              ),
+                              // 扩展上下文（±2 相邻 chunk）
+                              _HighlightedText(
+                                text: s.contextText,
+                                keywords: _questionCtrl.text
+                                    .trim()
+                                    .split(RegExp(r'\s+')),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ],
-                  ),
-                );
-              }),
-            ],
-          ],
+                  ],
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

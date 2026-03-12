@@ -45,21 +45,18 @@ class PromptBuilder:
         # TODO: 实现 prompt 构建逻辑
         text_length_limit = self._MAX_CONTEXT_TOKENS * self._CHARS_PER_TOKEN // len(chunks)
 
-        chunk_number = len(chunks)
         context = ""
-        for index,chunk in enumerate(chunks):
-            text = chunk.text if len(chunk.text) < text_length_limit else chunk.text[:text_length_limit]
-            context += f"""[{index} (Paper: {chunk.paper_id}, Section: {chunk.section})\n {text}\n]"""
+        for index, chunk in enumerate(chunks):
+            text = chunk.context_text    if len(chunk.context_text) <= text_length_limit else chunk.context_text[:text_length_limit]
+            context += f"[{index + 1}] (Paper: {chunk.paper_id}, Section: {chunk.section})\n{text}\n\n"
 
-        prompt = f"""
-                You are an AI research assistant. Answer the question based ONLY on the
-                provided context. Cite sources using {chunk_number} notation.
+        prompt = f"""You are an AI research assistant. Answer the question based ONLY on the provided context. Cite sources using [N] notation.
 
-                Context:
-                {context}
-                Question: 
-                {question}
-                Answer:
-        """
+Context:
+{context}
+Question: {question}
+
+Answer:"""
+        # print("[PromptBuilder] prompt:\n", prompt, flush=True)
         return prompt
         raise NotImplementedError

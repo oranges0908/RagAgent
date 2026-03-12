@@ -20,7 +20,7 @@ EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 # LLM
 LLM_PROVIDER = "gemini"
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
-LLM_MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", 1024))
+LLM_MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", 4096))
 
 # Upload
 MAX_UPLOAD_SIZE_MB = int(os.environ.get("MAX_UPLOAD_SIZE_MB", 20))

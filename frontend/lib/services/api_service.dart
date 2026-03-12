@@ -11,6 +11,7 @@ class Source {
   final int chunkIndex;
   final String text;
   final double score;
+  final String contextText;
 
   Source({
     required this.paperId,
@@ -18,6 +19,7 @@ class Source {
     required this.chunkIndex,
     required this.text,
     required this.score,
+    required this.contextText,
   });
 
   factory Source.fromJson(Map<String, dynamic> j) => Source(
@@ -26,6 +28,7 @@ class Source {
         chunkIndex: j['chunk_index'],
         text: j['text'],
         score: (j['score'] as num).toDouble(),
+        contextText: (j['context_text'] as String?) ?? j['text'] as String,
       );
 }
 

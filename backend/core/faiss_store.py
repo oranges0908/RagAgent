@@ -14,8 +14,9 @@ class SearchResult:
     paper_id: str       # 来源论文 ID
     chunk_index: int    # chunk 在原文中的序号
     section: str        # 所属章节名
-    text: str           # chunk 原文
+    text: str           # 命中 chunk 原文（用于 LLM prompt）
     score: float        # 相似度分数（L2 距离，越小越相似）
+    context_text: str = ""  # 扩展上下文（±2 相邻 chunk，用于前端展示）
 
 
 class FAISSStore:
@@ -147,12 +148,23 @@ class FAISSStore:
             for pos, idx in enumerate(indices[0]):
                 if idx == -1:
                     continue
+                meta = self._metadata[paper]
+                matched = meta[idx]
+                section = matched["section"]
+
+                # 扩展上下文：取 ±2 相邻 chunk（同 section）
+                window = meta[max(0, idx - 2): idx + 3]
+                context_chunks = [c for c in window if c["section"] == section]
+                context_chunks.sort(key=lambda c: c["char_start"])
+                context_text = " ".join(c["text"] for c in context_chunks)
+
                 sr = SearchResult(
                     paper_id=paper,
-                    chunk_index=self._metadata[paper][idx]["chunk_index"],
-                    section=self._metadata[paper][idx]["section"],
-                    text=self._metadata[paper][idx]["text"],
+                    chunk_index=matched["chunk_index"],
+                    section=section,
+                    text=matched["text"],
                     score=float(distances[0][pos]),
+                    context_text=context_text,
                 )
                 rc.append(sr)
 

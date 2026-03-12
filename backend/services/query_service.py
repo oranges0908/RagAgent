@@ -65,6 +65,7 @@ class QueryService:
 
         # 4. 调用 LLM
         answer = await self.llm.complete(prompt)
+        print("[llm] answer:\n", answer, flush=True)
 
         # 5. 组装 sources
         sources = [
@@ -74,6 +75,7 @@ class QueryService:
                 chunk_index=r.chunk_index,
                 text=r.text,
                 score=r.score,
+                context_text=r.context_text,
             )
             for r in results
         ]

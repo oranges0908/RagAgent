@@ -4,8 +4,11 @@ services:
       context: .
       dockerfile: docker/Dockerfile.backend
     env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./storage:/app/storage
+      - ./backend:/app/backend
     restart: unless-stopped
 
   frontend:
