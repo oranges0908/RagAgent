@@ -1,9 +1,11 @@
+import hashlib
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from fastapi.responses import JSONResponse
 
 from backend.config import MAX_UPLOAD_BYTES
 from backend.db.database import get_db
 from backend.db.models import Paper
+from backend.db.repository import PaperRepository
 from backend.core.faiss_store import FAISSStore
 from backend.services.ingestion import IngestionService
 
@@ -41,9 +43,15 @@ async def upload_pdf(
             detail=f"File too large. Maximum size is {MAX_UPLOAD_BYTES // (1024*1024)}MB.",
         )
 
+    # 去重：相同文件内容直接返回已有记录
+    file_hash = hashlib.md5(file_bytes).hexdigest()
+    existing = await PaperRepository(db).get_by_hash(file_hash)
+    if existing:
+        return existing
+
     service = IngestionService(db, store)
     try:
-        paper = await service.ingest(file_bytes, file.filename)
+        paper = await service.ingest(file_bytes, file.filename, file_hash=file_hash)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {e}")
 

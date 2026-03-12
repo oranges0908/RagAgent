@@ -10,6 +10,7 @@ class Paper(BaseModel):
     uploaded_at: str
     chunk_count: int = 0
     status: str = "processing"
+    file_hash: Optional[str] = None
 
 
 # ── Query 相关 Schema ──────────────────────────────────────────────────────────

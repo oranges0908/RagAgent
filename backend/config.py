@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Paths
@@ -7,20 +8,20 @@ FAISS_DIR = STORAGE_DIR / "faiss"
 DB_PATH = STORAGE_DIR / "papers.db"
 
 # Chunking
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 100
+CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE", 500))
+CHUNK_OVERLAP = int(os.environ.get("CHUNK_OVERLAP", 100))
 
 # Retrieval
-TOP_K = 3
+TOP_K = int(os.environ.get("TOP_K", 3))
 
 # Embedding
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
 # LLM
-LLM_PROVIDER="gemini"
-GEMINI_MODEL = "gemini-2.0-flash"
-LLM_MAX_TOKENS = 1024
+LLM_PROVIDER = "gemini"
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+LLM_MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", 1024))
 
 # Upload
-MAX_UPLOAD_SIZE_MB = 20
+MAX_UPLOAD_SIZE_MB = int(os.environ.get("MAX_UPLOAD_SIZE_MB", 20))
 MAX_UPLOAD_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024

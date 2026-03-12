@@ -20,7 +20,7 @@ class IngestionService:
         self.chunker = TextChunker(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
         self.embedder = Embedder(EMBEDDING_MODEL)
 
-    async def ingest(self, file_bytes: bytes, filename: str) -> Paper:
+    async def ingest(self, file_bytes: bytes, filename: str, file_hash: str | None = None) -> Paper:
         """
         完整的 PDF 摄入流水线：提取 → 分块 → Embedding → 写入 FAISS + SQLite。
 
@@ -52,6 +52,7 @@ class IngestionService:
             uploaded_at=now,
             chunk_count=0,
             status="processing",
+            file_hash=file_hash,
         )
         await self.repo.insert(paper)
 

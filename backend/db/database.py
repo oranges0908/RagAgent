@@ -20,6 +20,11 @@ async def init_db() -> None:
         await db.execute("""
             CREATE INDEX IF NOT EXISTS idx_papers_uploaded_at ON papers(uploaded_at DESC)
         """)
+        # 兼容旧数据库：file_hash 列可能不存在
+        try:
+            await db.execute("ALTER TABLE papers ADD COLUMN file_hash TEXT")
+        except Exception:
+            pass  # 列已存在，忽略
         await db.commit()
 
 

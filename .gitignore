@@ -6,3 +6,4 @@ __pycache__/
 storage/*.db
 storage/faiss/
 test.py
+/.env
