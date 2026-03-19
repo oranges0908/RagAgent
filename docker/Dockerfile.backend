@@ -3,6 +3,8 @@ FROM python:3.13-slim
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
+# Use the pre-baked model cache; skip HuggingFace network checks on every startup
+ENV HF_HUB_OFFLINE=1
 
 COPY backend/requirements.txt .
 # Install CPU-only PyTorch first to avoid the default 2.5 GB CUDA build
