@@ -32,7 +32,7 @@ class _UploadPageState extends State<UploadPage> {
       final paper = await ApiService.upload(file.name, file.bytes!);
       setState(() {
         _success = true;
-        _message = '上传成功：${paper.title}（${paper.chunkCount} chunks）';
+        _message = 'Upload successful: ${paper.title} (${paper.chunkCount} chunks)';
       });
     } catch (e) {
       setState(() {
@@ -51,14 +51,14 @@ class _UploadPageState extends State<UploadPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('上传论文', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          const Text('Upload Paper', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: _uploading ? null : _pickAndUpload,
             icon: _uploading
                 ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.upload_file),
-            label: Text(_uploading ? '上传中…' : '选择 PDF 文件'),
+            label: Text(_uploading ? 'Uploading…' : 'Select PDF File'),
           ),
           if (_message != null) ...[
             const SizedBox(height: 16),

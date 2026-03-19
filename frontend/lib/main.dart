@@ -52,9 +52,9 @@ class _HomePageState extends State<HomePage> {
             onDestinationSelected: (i) => setState(() => _selectedIndex = i),
             labelType: NavigationRailLabelType.all,
             destinations: const [
-              NavigationRailDestination(icon: Icon(Icons.upload_file), label: Text('上传')),
-              NavigationRailDestination(icon: Icon(Icons.library_books), label: Text('论文')),
-              NavigationRailDestination(icon: Icon(Icons.question_answer), label: Text('问答')),
+              NavigationRailDestination(icon: Icon(Icons.upload_file), label: Text('Upload')),
+              NavigationRailDestination(icon: Icon(Icons.library_books), label: Text('Papers')),
+              NavigationRailDestination(icon: Icon(Icons.question_answer), label: Text('Q&A')),
             ],
           ),
           const VerticalDivider(thickness: 1, width: 1),

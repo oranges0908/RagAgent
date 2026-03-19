@@ -140,14 +140,14 @@ class _QueryPageState extends State<QueryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('论文问答',
+          const Text('Paper Q&A',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           // Paper selector dropdown
           DropdownButtonFormField<String?>(
             initialValue: _selectedPaperId,
             decoration: const InputDecoration(
-              labelText: '检索范围',
+              labelText: 'Search Scope',
               border: OutlineInputBorder(),
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -155,7 +155,7 @@ class _QueryPageState extends State<QueryPage> {
             items: [
               const DropdownMenuItem<String?>(
                 value: null,
-                child: Text('全库'),
+                child: Text('All Papers'),
               ),
               ..._papers.map((p) => DropdownMenuItem<String?>(
                     value: p.id,
@@ -172,7 +172,7 @@ class _QueryPageState extends State<QueryPage> {
                 child: TextField(
                   controller: _questionCtrl,
                   decoration: const InputDecoration(
-                    hintText: '输入你的问题…',
+                    hintText: 'Enter your question…',
                     border: OutlineInputBorder(),
                   ),
                   onSubmitted: (_) => _submit(),
@@ -187,7 +187,7 @@ class _QueryPageState extends State<QueryPage> {
                         height: 18,
                         child:
                             CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('提问'),
+                    : const Text('Ask'),
               ),
             ],
           ),
@@ -209,7 +209,7 @@ class _QueryPageState extends State<QueryPage> {
                           style: TextStyle(color: Colors.red.shade800)),
                     ),
                   if (_answer.isNotEmpty || _sources.isNotEmpty) ...[
-                    const Text('答案',
+                    const Text('Answer',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
@@ -225,7 +225,7 @@ class _QueryPageState extends State<QueryPage> {
                     ),
                     if (_sources.isNotEmpty) ...[
                       const SizedBox(height: 20),
-                      const Text('来源',
+                      const Text('Sources',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
@@ -258,7 +258,7 @@ class _QueryPageState extends State<QueryPage> {
                                       color: const Color(0xFFFFEB3B)),
                                 ),
                                 child: Text(
-                                  '匹配片段：${s.text}',
+                                  'Matched snippet: ${s.text}',
                                   style: const TextStyle(
                                       fontSize: 12, color: Colors.black54),
                                 ),

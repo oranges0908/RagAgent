@@ -23,14 +23,14 @@ class _PapersPageState extends State<PapersPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('确认删除'),
-        content: Text('删除「${paper.title}」？此操作不可撤销。'),
+        title: const Text('Confirm Delete'),
+        content: Text('Delete "${paper.title}"? This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('取消')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('删除'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -71,9 +71,9 @@ class _PapersPageState extends State<PapersPage> {
         children: [
           Row(
             children: [
-              const Text('论文列表', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text('Papers', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const Spacer(),
-              IconButton(onPressed: _load, icon: const Icon(Icons.refresh), tooltip: '刷新'),
+              IconButton(onPressed: _load, icon: const Icon(Icons.refresh), tooltip: 'Refresh'),
             ],
           ),
           const SizedBox(height: 24),
@@ -90,7 +90,7 @@ class _PapersPageState extends State<PapersPage> {
               child: Text(_error!, style: TextStyle(color: Colors.red.shade800)),
             )
           else if (_papers == null || _papers!.isEmpty)
-            const Center(child: Text('暂无论文，请先上传 PDF。'))
+            const Center(child: Text('No papers yet. Upload a PDF to get started.'))
           else
             Expanded(
               child: ListView.separated(
@@ -112,7 +112,7 @@ class _PapersPageState extends State<PapersPage> {
                               ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
                               : IconButton(
                                   icon: const Icon(Icons.delete_outline, color: Colors.red),
-                                  tooltip: '删除',
+                                  tooltip: 'Delete',
                                   onPressed: () => _confirmDelete(p),
                                 ),
                         ],
