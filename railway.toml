@@ -1,0 +1,12 @@
+# Railway configuration for the Backend service.
+# The Frontend service is configured via the Railway dashboard
+# (Dockerfile path: docker/Dockerfile.frontend).
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "docker/Dockerfile.backend"
+
+[deploy]
+healthcheckPath = "/api/papers"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
