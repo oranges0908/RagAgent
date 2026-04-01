@@ -1,0 +1,44 @@
+# ── Stage 1: Build Flutter Web ──────────────────────────────────────────────
+FROM ghcr.io/cirruslabs/flutter:stable AS flutter-builder
+
+WORKDIR /app
+COPY frontend/ .
+RUN flutter pub get && flutter build web
+
+# ── Stage 2: Final image (Python + nginx + supervisord) ─────────────────────
+FROM python:3.13-slim
+
+ENV PYTHONUNBUFFERED=1
+ENV HF_HUB_OFFLINE=1
+
+# Install nginx and supervisord
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Python dependencies
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Pre-download embedding model
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
+# Copy backend source
+COPY backend/ backend/
+
+# Copy Flutter build output to nginx web root
+COPY --from=flutter-builder /app/build/web /usr/share/nginx/html
+
+# nginx config: serve Flutter on /, proxy /api/ to uvicorn on 8000
+COPY docker/nginx.combined.conf /etc/nginx/sites-enabled/default
+
+# supervisord config: manage nginx + uvicorn
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

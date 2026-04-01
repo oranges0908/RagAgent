@@ -1,10 +1,8 @@
-# Railway configuration for the Backend service.
-# The Frontend service is configured via the Railway dashboard
-# (Dockerfile path: docker/Dockerfile.frontend).
+# Railway configuration — combined frontend + backend in one container.
 
 [build]
 builder = "dockerfile"
-dockerfilePath = "docker/Dockerfile.backend"
+dockerfilePath = "docker/Dockerfile.combined"
 
 [deploy]
 healthcheckPath = "/api/papers"
