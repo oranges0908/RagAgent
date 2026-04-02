@@ -35,12 +35,15 @@ COPY backend/ backend/
 # Copy Flutter build output to nginx web root
 COPY --from=flutter-builder /app/build/web /usr/share/nginx/html
 
-# nginx config: serve Flutter on /, proxy /api/ to uvicorn on 8000
-COPY docker/nginx.combined.conf /etc/nginx/sites-enabled/default
+# nginx config template: envsubst fills in $PORT at container startup
+RUN rm -f /etc/nginx/sites-enabled/default
+COPY docker/nginx.combined.conf /etc/nginx/sites-available/default.template
 
 # supervisord config: manage nginx + uvicorn
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Default PORT=80 for local use; Railway overrides this with its own PORT
+ENV PORT=80
 EXPOSE 80
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
