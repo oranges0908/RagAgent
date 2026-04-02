@@ -3,7 +3,7 @@ FROM ghcr.io/cirruslabs/flutter:stable AS flutter-builder
 
 WORKDIR /app
 COPY frontend/ .
-RUN flutter pub get && flutter build web
+RUN flutter pub get && flutter build web --dart-define=API_BASE_URL=
 
 # ── Stage 2: Final image (Python + nginx + supervisord) ─────────────────────
 FROM python:3.13-slim
